@@ -1,0 +1,8 @@
+organization_name,careers_url,tier,scrape_method,hr_contact,notes
+"GitLab","https://about.gitlab.com/jobs/all-jobs/","tier2","auto","careers@gitlab.com","Empresa mediada - Portal de empleos"
+"Zapier","https://zapier.com/jobs#job-openings","tier2","auto","careers@zapier.com","Startup tech - Ofrece empleos remotos"
+"Automattic","https://automattic.com/jobs/","tier2","auto","jobs@automattic.com","Creadores de WordPress - Empleos"
+"Figma","https://www.figma.com/careers/#job-openings","tier2","auto","careers@figma.com","Startup de diseño - Portal de empleos"
+"Intercom","https://www.intercom.com/careers/listings","tier2","auto","careers@intercom.com","Empresa tech mediada - Empleos"
+"Notion","https://www.notion.com/careers","tier2","auto","careers@notion.so","Startup productividad - Portal empleos"
+"FedericoValverde","https://tech-beyond-jobs.vercel.app/","tier2","auto","careers@gitlab.com","Empresa mediada - Portal de empleos"

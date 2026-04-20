@@ -81,7 +81,7 @@ class VacancyAnalyzer:
 extrae TODAS las vacantes o PUESTOS DE TRABAJO disponibles que sean de TECH/SOFTWARE/DESARROLLO/INGENIERIA DE SISTEMAS/INFRAESTRUCTURA/DEVOPS.
 
 Para cada vacante encontrada, extrae:
-- title: Título del puesto (ej: "Senior Developer", "Full-stack Engineer")
+- title: Título del puesto (ej: "Senior Developer", "Full-stack Engineer", "Ingeniero de Software", "Ingeniero de sistemas", "DevOps", etc.)
 - description: Descripción breve del trabajo (máximo 200 caracteres)
 - requirements: Requisitos técnicos principales separados por comas
 - salary: Rango salarial o moneda (si está disponible, si no disponible dejar vacío)

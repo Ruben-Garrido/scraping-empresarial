@@ -15,7 +15,8 @@ from pathlib import Path
 
 from storage.csv_loader import load_organizations, Organization
 from storage.snapshots import get_last_hash, save_snapshot
-from storage.vacantes import save_vacancy
+from storage.vacantes import sync_vacancies_for_org
+from utils.mailer import send_new_vacancies_email
 from scraper.detector import detect_page_type
 from scraper.static_scraper import scrape_static
 from scraper.dynamic_scraper import scrape_dynamic
@@ -113,19 +114,16 @@ async def process_org(org: Organization, dry_run: bool = False) -> dict:
     # ── 6. Analizar con OpenAI ───────────────────────────────────────────────
     if not dry_run:
         vacancies = await analyze_vacancies(org.name, json_dom, org.careers_url)
-        result["vacancies"] = len(vacancies)
+        
+        # Sincronizar (insertar, actualizar, cerrar) y obtener solo el conteo de genuinamente NUEVAS
+        new_vacancies_found = sync_vacancies_for_org(org.name, vacancies, org.careers_url)
 
-        # Guardar cada vacante
-        for vacancy in vacancies:
-            save_vacancy(
-                org_name=org.name,
-                title=vacancy.get("title", ""),
-                description=vacancy.get("description", ""),
-                requirements=vacancy.get("requirements", ""),
-                salary=vacancy.get("salary", ""),
-                location=vacancy.get("location", ""),
-                source_url=org.careers_url,
-            )
+        result["vacancies"] = new_vacancies_found
+        
+        if new_vacancies_found > 0:
+            logger.info(f"     ✅ {new_vacancies_found} vacantes nuevas extraídas de {len(vacancies)} totales descubiertas hoy")
+        else:
+            logger.info(f"     ℹ️ {len(vacancies)} vacantes procesadas (0 nuevas para alertar)")
 
         # Guardar snapshot solo después de procesar con IA
         save_snapshot(org.name, org.careers_url, new_hash, raw_text)
@@ -189,8 +187,17 @@ async def run(csv_path: Path, tier_filter: str | None, dry_run: bool) -> None:
     logger.info(f"     Con cambios  🔔  : {counts.get('changed', 0)}")
     logger.info(f"     Sin cambios      : {counts.get('unchanged', 0)}")
     logger.info(f"     Errores      ❌  : {counts.get('error', 0)}")
-    logger.info(f"     Total vacantes   : {total_vacancies}")
+    logger.info(f"     Nuevas vacantes  : {total_vacancies}")
     logger.info("=" * 60)
+
+    # Enviar correo si hay nuevas vacantes y no es dry-run
+    if total_vacancies > 0 and not dry_run:
+        logger.info("📧 Enviando notificación por correo...")
+        success = send_new_vacancies_email(total_vacancies)
+        if success:
+            logger.info("✅ Correo enviado correctamente.")
+        else:
+            logger.error("❌ Falló el envío del correo.")
 
 
 # ──────────────────────────────────────────────────────────────────────────────

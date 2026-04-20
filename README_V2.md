@@ -22,6 +22,9 @@ Monitor automatizado de vacantes tecnológicas con análisis inteligente.
 ```bash
 OPENAI_API_KEY=sk-your-api-key-here
 OPENAI_MODEL=gpt-4o-mini
+RESEND_API_KEY=re_your_resend_api_key
+RESEND_SENDER_EMAIL=onboarding@resend.dev
+RESEND_RECIPIENT_EMAIL=tu_correo@ejemplo.com
 ```
 
 ### 2. Obtener API Key
